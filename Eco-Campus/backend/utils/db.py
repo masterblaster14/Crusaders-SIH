@@ -1,14 +1,14 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
+import mysql.connector
 import os
+from dotenv import load_dotenv
 
-db = SQLAlchemy()
+load_dotenv()  # loads .env file
 
-def init_app(app: Flask):
-    app.config["SQLALCHEMY_DATABASE_URI"] = (
-        f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}"
-        f"@{os.getenv('DB_HOST', 'localhost')}/{os.getenv('DB_NAME')}"
+def get_db_connection():
+    connection = mysql.connector.connect(
+        host=os.getenv("DB_HOST", "localhost"),
+        user=os.getenv("DB_USER", "root"),
+        password=os.getenv("DB_PASSWORD", ""),
+        database=os.getenv("DB_NAME", "eco_campus_db")
     )
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    db.init_app(app)
-    return app
+    return connection
